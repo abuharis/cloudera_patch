@@ -1,6 +1,8 @@
 ---
 
 - include_vars: ../../../group_vars/db_server.yml
+- include_vars: ../../../group_vars/cdh_servers.yml
+- include_vars: ../../../group_vars/scm_server.yml
 
 - name: Install the Cloudera Manager Server Packages
   yum: name={{ item }} state=installed
@@ -10,11 +12,17 @@
     - cloudera-manager-agent
 
 - name: Prepare Cloudera Manager Server External Database
-  command: /usr/share/cmf/schema/scm_prepare_database.sh
+  command: /opt/cloudera/cm/schema/scm_prepare_database.sh 
              -f
-             --host {{ hostvars[db_hostname]['inventory_hostname'] }}
-             mysql {{ databases.scm.name }} {{ databases.scm.user }} {{ databases.scm.pass }}
+             --host localhost
+             mysql {{ databases.scm.name }}   {{ databases.scm.user }}  {{ databases.scm.pass }} 
   changed_when: False
+
+
+- debug:
+    msg: "{{databases.scm.pass}}"
+
+
 
 - name: Start the Cloudera Manager Server
   service: name={{ item }} state=restarted enabled=yes

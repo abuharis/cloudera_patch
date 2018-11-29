@@ -1,7 +1,7 @@
 ---
 
 - include: 36322.yml
-
+- include_vars: ../../../group_vars/cdh_servers.yml
 - name: Install Cloudera Manager Agents
   yum: name={{ item }} state=installed
   with_items:

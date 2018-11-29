@@ -1,10 +1,18 @@
 ---
+- rpm_key:
+    state: present
+    key: https://archive.cloudera.com/cm6/6.0.0/sles12/yum/RPM-GPG-KEY-cloudera
 
 - name: Install Oracle JDK
   yum: name={{ item }} state=latest update_cache=yes
   with_items:
-    - oracle-j2sdk1.7
+    - oracle-j2sdk1.8
     - unzip
+
+- command: find /usr/java -maxdepth 1 -type d -iname jdk*
+  register: jdk_directory
+
+- set_fact: jdk_path={{jdk_directory.stdout}}
 
 - stat: path="{{ tmp_dir }}/UnlimitedJCEPolicyJDK7.zip"
   register: jce_zip_exists
@@ -25,14 +33,14 @@
 - name: Install local_policy.jar
   copy:
     src: "{{ tmp_dir }}/UnlimitedJCEPolicy/local_policy.jar"
-    dest: /usr/java/jdk1.7.0_67-cloudera/jre/lib/security/local_policy.jar
+    dest: "{{jdk_path}}/jre/lib/security/local_policy.jar"
     backup: yes
     remote_src: True
 
 - name: Install US_export_policy.jar
   copy:
     src: "{{ tmp_dir }}/UnlimitedJCEPolicy/US_export_policy.jar"
-    dest: /usr/java/jdk1.7.0_67-cloudera/jre/lib/security/US_export_policy.jar
+    dest: "{{jdk_path}}/jre/lib/security/US_export_policy.jar"
     backup: yes
     remote_src: True
 

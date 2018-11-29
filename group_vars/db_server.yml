@@ -12,8 +12,8 @@ mysql_root_password: changeme
 databases:
   scm:
     name: 'scm'
-    user: 'scm'
     pass: 'scm_password'
+    user: 'scm'
     type: 'mysql'
   amon:
     name: 'amon'

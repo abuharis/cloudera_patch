@@ -9,4 +9,7 @@
     - restart rngd
 
 - name: ensure rngd is running
-  service: name=rngd state=started enabled=yes
+  systemd:
+    name: rngd
+    daemon_reload: yes
+    state: restarted
